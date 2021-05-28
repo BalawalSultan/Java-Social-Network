@@ -61,7 +61,7 @@ public class FollowUser {
 
     private HashMap<String,Integer> getPossibleUsers() throws Exception{
         HashMap<String,Integer> possibleUsers = new HashMap<>();
-        String query = "SELECT user_id, name " +
+        String query = "SELECT user_id, username " +
                        "FROM Users WHERE user_id NOT IN(" +
                             "SELECT followed FROM Followeers WHERE follower = ? AND followed <> ?"+
                         ") AND user_id <> ? AND is_profile_public = true";
@@ -77,7 +77,7 @@ public class FollowUser {
             while(results.next()){
                 addToMap(
                     possibleUsers,
-                    results.getString("name"),
+                    results.getString("username"),
                     results.getInt("user_id")
                 );
             }

@@ -72,7 +72,7 @@ public class UserInterface {
     private void print_interface() {
         System.out.println();
         System.out.println("[1]Make a post");
-        System.out.println("[2]Add a friend");
+        System.out.println("[2]Follow a user");
         System.out.println("[3]Send a message");
         System.out.println("[4]Show time spent on Twitaroo");
         System.out.println("[5]Change profile visibility");
