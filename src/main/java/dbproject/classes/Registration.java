@@ -22,7 +22,7 @@ public class Registration {
         String query = "INSERT INTO Users VALUES (default,?,?,?,?,?,?)";
         PreparedStatement pstmt = connection.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS);
 
-        pstmt.setString(1, insert_string("username"));
+        pstmt.setString(1, insert_username());
         pstmt.setString(2, select_city());
         pstmt.setInt(3, insert_age());
         pstmt.setString(4, insert_password());

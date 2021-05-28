@@ -18,7 +18,7 @@ public class FollowUser {
     }
 
     public void followUser() throws Exception{
-        HashMap<String,Integer> possibleUsers = getPossibleFriends();
+        HashMap<String,Integer> possibleUsers = getPossibleUsers();
         String choice = "";
 
         do{

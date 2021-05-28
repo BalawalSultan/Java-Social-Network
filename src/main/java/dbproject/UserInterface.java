@@ -3,10 +3,10 @@ package dbproject;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import dbproject.classes.AddFriend;
+import dbproject.classes.FollowUser;
 import dbproject.classes.AddPhoneNumber;
 import dbproject.classes.ChangeProfileVisibility;
-import dbproject.classes.MakePost;
+import dbproject.classes.TweetMenu;
 import dbproject.classes.ShowTimeSpent;
 import dbproject.classes.chat.Chat;
 import dbproject.classes.utility.InputReader;
@@ -34,8 +34,8 @@ public class UserInterface {
                             menu.askToMakeTweet();
                         break;
 
-                    case 2: AddFriend addFriend = new AddFriend(connection, user_id);
-                            addFriend.chooseFriend();
+                    case 2: FollowUser followUser = new FollowUser(connection, user_id);
+                            followUser.followUser();
                         break;
 
                     case 3: Chat chat = new Chat(connection, user_id);

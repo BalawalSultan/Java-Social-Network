@@ -18,7 +18,7 @@ public class Login {
         String mail = insert_mail();
         String password = insert_password();
 
-        String query = "SELECT user_id, password, name FROM Users WHERE mail = ?";
+        String query = "SELECT user_id, password, username FROM Users WHERE mail = ?";
         PreparedStatement pstmt = connection.prepareStatement(query);
         pstmt.setString(1, mail);
 
@@ -28,7 +28,7 @@ public class Login {
             String hashedPassword = result.getString("password");
             System.out.println("Verifying your password....");
             if(Validator.compareWithHash(password, hashedPassword)){
-                System.out.println("\nWelcome " + result.getString("name"));
+                System.out.println("\nWelcome " + result.getString("username"));
                 id = result.getInt("user_id");
             }else{
                 System.out.println("\nWrong password for mail \" " + mail + "\".");
