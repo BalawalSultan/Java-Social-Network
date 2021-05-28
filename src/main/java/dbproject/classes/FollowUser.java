@@ -8,48 +8,48 @@ import java.util.Map;
 
 import dbproject.classes.utility.InputReader;
 
-public class AddFriend {
+public class FollowUser {
     Connection connection;
     Integer user_id;
 
-    public AddFriend(Connection connection, Integer user_id){
+    public FollowUser(Connection connection, Integer user_id){
         this.connection = connection;
         this.user_id = user_id;
     }
 
-    public void chooseFriend() throws Exception{
-        HashMap<String,Integer> possibleFriends = getPossibleFriends();
+    public void followUser() throws Exception{
+        HashMap<String,Integer> possibleUsers = getPossibleFriends();
         String choice = "";
 
         do{
             System.out.println("\nPossible Friends");
-            for(Map.Entry<String,Integer> entry: possibleFriends.entrySet())
+            for(Map.Entry<String,Integer> entry: possibleUsers.entrySet())
                 System.out.println(entry.getKey());
 
-            System.out.println("\nWrite the name of the person you want to add");
-            System.out.printf("add as friend or write stop to go back: ");
+            System.out.println("\nWrite the name of the person you want to follow");
+            System.out.printf("or write stop to go back: ");
             choice = InputReader.readString();
 
-            if(possibleFriends.containsKey(choice)){
-                addAsFriend(possibleFriends.get(choice));
-                possibleFriends.remove(choice);
+            if(possibleUsers.containsKey(choice)){
+                addAsFriend(possibleUsers.get(choice));
+                possibleUsers.remove(choice);
             }
 
         }while(!choice.equals("stop"));
     }
 
-    private void addAsFriend(Integer friend_id){
-        String query = "INSERT INTO Friend VALUES (?,?)";
+    private void addAsFriend(Integer followed_id){
+        String query = "INSERT INTO Followers VALUES (?,?)";
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
             pstmt.setInt(1, user_id);
-            pstmt.setInt(2, friend_id);
+            pstmt.setInt(2, followed_id);
             pstmt.execute();
             pstmt.close();
 
             //if A is friend of B, B must also be a friend of A
             pstmt = connection.prepareStatement(query);
-            pstmt.setInt(1, friend_id);
+            pstmt.setInt(1, followed_id);
             pstmt.setInt(2, user_id);
             pstmt.execute();
             pstmt.close();
@@ -59,11 +59,11 @@ public class AddFriend {
         }
     }
 
-    private HashMap<String,Integer> getPossibleFriends() throws Exception{
-        HashMap<String,Integer> possibleFriends = new HashMap<>();
+    private HashMap<String,Integer> getPossibleUsers() throws Exception{
+        HashMap<String,Integer> possibleUsers = new HashMap<>();
         String query = "SELECT user_id, name " +
                        "FROM Users WHERE user_id NOT IN(" +
-                            "SELECT friend FROM Friend WHERE users = ? AND friend <> ?"+
+                            "SELECT followed FROM Followeers WHERE follower = ? AND followed <> ?"+
                         ") AND user_id <> ? AND is_profile_public = true";
 
         try{
@@ -76,7 +76,7 @@ public class AddFriend {
 
             while(results.next()){
                 addToMap(
-                    possibleFriends,
+                    possibleUsers,
                     results.getString("name"),
                     results.getInt("user_id")
                 );
@@ -88,7 +88,7 @@ public class AddFriend {
             e.printStackTrace();
         }
 
-        return possibleFriends;
+        return possibleUsers;
     }
 
     private void addToMap(HashMap<String,Integer> map, String key, Integer value){

@@ -19,16 +19,15 @@ public class Registration {
     }
   
     public void registerNewUser() throws Exception{
-        String query = "INSERT INTO Users VALUES (default,?,?,?,?,?,?,?)";
+        String query = "INSERT INTO Users VALUES (default,?,?,?,?,?,?)";
         PreparedStatement pstmt = connection.prepareStatement(query,PreparedStatement.RETURN_GENERATED_KEYS);
 
-        pstmt.setString(1, insert_string("name"));
-        pstmt.setString(2, insert_string("surname"));
-        pstmt.setString(3, select_city());
-        pstmt.setInt(4, insert_age());
-        pstmt.setString(5, insert_password());
-        pstmt.setString(6, insert_mail());
-        pstmt.setBoolean(7, is_profile_public());
+        pstmt.setString(1, insert_string("username"));
+        pstmt.setString(2, select_city());
+        pstmt.setInt(3, insert_age());
+        pstmt.setString(4, insert_password());
+        pstmt.setString(5, insert_mail());
+        pstmt.setBoolean(6, is_profile_public());
 
         pstmt.executeUpdate();
 
@@ -42,15 +41,13 @@ public class Registration {
 
         AddPhoneNumber phoneNumber = new AddPhoneNumber(connection, user_id);
         phoneNumber.askForPhoneNumber();
-        phoneNumber = null;
     }
 
-    private String insert_string(String field){
+    private String insert_username(){
+        System.out.printf("Please insert your username: ");
+        String username = InputReader.readString();
 
-        System.out.printf("Please insert your %s: ", field);
-        String temp = InputReader.readString();
-
-        return temp;
+        return username;
     }
 
     private String insert_mail(){

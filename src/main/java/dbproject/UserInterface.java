@@ -30,8 +30,8 @@ public class UserInterface {
             try {
                 choice = get_choice();
                 switch (choice) {
-                    case 1: MakePost post = new MakePost(connection, user_id);
-                            post.selectPostType();
+                    case 1: TweetMenu menu = new TweetMenu(connection, user_id);
+                            menu.askToMakeTweet();
                         break;
 
                     case 2: AddFriend addFriend = new AddFriend(connection, user_id);

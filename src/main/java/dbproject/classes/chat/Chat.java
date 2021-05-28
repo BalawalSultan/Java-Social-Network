@@ -18,31 +18,31 @@ public class Chat {
     }
 
     public void choseFriendToSendMessageTo() throws Exception{
-        HashMap<String,Integer> friends = getFriends();
+        HashMap<String,Integer> followers = getFollowers();
         String choice = "";
 
         do{
-            System.out.println("Friends");
-            for(Map.Entry<String,Integer> entry: friends.entrySet())
+            System.out.println("Followers");
+            for(Map.Entry<String,Integer> entry: followers.entrySet())
                 System.out.println(entry.getKey());
 
             System.out.println("\nWrite the index and name of the person you want to ");
             System.out.printf("chat with or write stop to go back: ");
             choice = InputReader.readString();
 
-            if(friends.containsKey(choice)){
-                ChatWithFriend chat = new ChatWithFriend(connection, user_id, friends.get(choice));
+            if(followers.containsKey(choice)){
+                ChatWithFriend chat = new ChatWithFriend(connection, user_id, followers.get(choice));
                 chat.startChat();
             }
 
         }while(!choice.equals("stop"));
     }
 
-    private HashMap<String,Integer> getFriends() throws Exception{
-        HashMap<String,Integer> friends = new HashMap<>();
+    private HashMap<String,Integer> getFollowers() throws Exception{
+        HashMap<String,Integer> followers = new HashMap<>();
         String query = "SELECT user_id, name " +
                        "FROM Users " +
-                       "JOIN Friend ON user_id = friend AND users = ?";
+                       "JOIN Followers ON user_id = follower AND followed = ?";
 
         try{
             PreparedStatement pstmt = connection.prepareStatement(query);
@@ -54,7 +54,7 @@ public class Chat {
                 String name = results.getString("name");
                 int id = results.getInt("user_id");
 
-                friends.put(id + "-" + name, id);
+                followers.put(id + "-" + name, id);
             }
 
             pstmt.close();
@@ -63,6 +63,6 @@ public class Chat {
             e.printStackTrace();
         }
 
-        return friends;
+        return followers;
     }
 }
