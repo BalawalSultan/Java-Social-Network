@@ -3,66 +3,85 @@ package dbproject.classes.chat;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.util.HashMap;
-import java.util.Map;
-
 import dbproject.classes.utility.InputReader;
 
 public class Chat {
     Connection connection;
-    Integer user_id;
+    Integer user_id, friend_id;
 
-    public Chat(Connection connection, Integer user_id){
+    public Chat(Connection connection, Integer user_id, Integer friend_id){
         this.connection = connection;
+        this.friend_id = friend_id;
         this.user_id = user_id;
     }
 
-    public void choseFriendToSendMessageTo() throws Exception{
-        HashMap<String,Integer> followers = getFollowers();
-        String choice = "";
+    public void startChat() throws Exception{
+        String message = "";
 
+        System.out.println("press enter to refresh the chat");
         do{
-            System.out.println("Followers");
-            for(Map.Entry<String,Integer> entry: followers.entrySet())
-                System.out.println(entry.getKey());
+            showChat();
 
-            System.out.println("\nWrite the index and name of the person you want to ");
-            System.out.printf("chat with or write stop to go back: ");
-            choice = InputReader.readString();
+            System.out.printf("\nwrite a message or write stop to exit: ");
+            message = InputReader.readString();
 
-            if(followers.containsKey(choice)){
-                ChatWithFriend chat = new ChatWithFriend(connection, user_id, followers.get(choice));
-                chat.startChat();
-            }
+            if(!message.equals("stop") && !message.isEmpty())
+                sendMessage(message);
 
-        }while(!choice.equals("stop"));
+        }while(!message.equals("stop"));
     }
 
-    private HashMap<String,Integer> getFollowers() throws Exception{
-        HashMap<String,Integer> followers = new HashMap<>();
-        String query = "SELECT user_id, name " +
-                       "FROM Users " +
-                       "JOIN Followers ON user_id = follower AND followed = ?";
+    private void showChat() throws Exception{
+        String query = "SELECT * " +
+                       "FROM Message " +
+                       "WHERE (sender = ? AND receiver = ?) OR (sender = ? AND receiver = ?)";
 
-        try{
             PreparedStatement pstmt = connection.prepareStatement(query);
             pstmt.setInt(1, user_id);
+            pstmt.setInt(2, friend_id);
+            pstmt.setInt(3, friend_id);
+            pstmt.setInt(4, user_id);
 
             ResultSet results = pstmt.executeQuery();
 
             while(results.next()){
-                String name = results.getString("name");
-                int id = results.getInt("user_id");
-
-                followers.put(id + "-" + name, id);
+                String date = results.getString("date");
+                String time = results.getString("time");
+                String text = results.getString("text");
+                int sender = results.getInt("sender");
+                printMessage(sender, text, date, time);
             }
 
             pstmt.close();
+    }
+
+    private void printMessage(int sender, String text, String date, String time){
+        if(sender == user_id)
+            System.out.printf("\n%s %s) You: %s", date, time, text);
+        else
+            System.out.printf("\n%s %s) Friend: %s", date, time, text);
+    }
+
+    private void sendMessage(String message){
+        String query = "INSERT INTO Message VALUES (default,?,?,?,?,?)";
+
+        try {
+            PreparedStatement pstmt = connection.prepareStatement(query);
+            java.util.Date date = new java.util.Date();	
+            java.sql.Date sqlDate = new java.sql.Date(date.getTime());
+            java.sql.Time time = new java.sql.Time(date.getTime());
+
+            pstmt.setInt(1, user_id);
+            pstmt.setInt(2, friend_id);
+            pstmt.setDate(3, sqlDate);
+            pstmt.setTime(4, time);
+            pstmt.setString(5, message);
+            pstmt.execute();
+            pstmt.close();
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
         }
-
-        return followers;
     }
 }

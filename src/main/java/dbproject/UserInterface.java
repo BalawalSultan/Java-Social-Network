@@ -8,7 +8,7 @@ import dbproject.classes.AddPhoneNumber;
 import dbproject.classes.ChangeProfileVisibility;
 import dbproject.classes.TweetMenu;
 import dbproject.classes.ShowTimeSpent;
-import dbproject.classes.chat.Chat;
+import dbproject.classes.chat.ChatMenu;
 import dbproject.classes.utility.InputReader;
 
 public class UserInterface {
@@ -35,11 +35,11 @@ public class UserInterface {
                         break;
 
                     case 2: FollowUser followUser = new FollowUser(connection, user_id);
-                            followUser.followUser();
+                            followUser.followUserMenu();
                         break;
 
-                    case 3: Chat chat = new Chat(connection, user_id);
-                            chat.choseFriendToSendMessageTo();
+                    case 3: ChatMenu chatMenu = new ChatMenu(connection, user_id);
+                            chatMenu.startMenu();
                         break;
                         
                     case 4: ShowTimeSpent timeSpent = new ShowTimeSpent(connection, user_id);

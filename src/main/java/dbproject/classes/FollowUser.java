@@ -17,7 +17,7 @@ public class FollowUser {
         this.user_id = user_id;
     }
 
-    public void followUser() throws Exception{
+    public void followUserMenu() throws Exception{
         HashMap<String,Integer> possibleUsers = getPossibleUsers();
         String choice = "";
 
@@ -31,14 +31,14 @@ public class FollowUser {
             choice = InputReader.readString();
 
             if(possibleUsers.containsKey(choice)){
-                addAsFriend(possibleUsers.get(choice));
+                followUser(possibleUsers.get(choice));
                 possibleUsers.remove(choice);
             }
 
         }while(!choice.equals("stop"));
     }
 
-    private void addAsFriend(Integer followed_id){
+    private void followUser(Integer followed_id){
         String query = "INSERT INTO Followers VALUES (?,?)";
         try {
             PreparedStatement pstmt = connection.prepareStatement(query);
@@ -47,12 +47,7 @@ public class FollowUser {
             pstmt.execute();
             pstmt.close();
 
-            //if A is friend of B, B must also be a friend of A
-            pstmt = connection.prepareStatement(query);
-            pstmt.setInt(1, followed_id);
-            pstmt.setInt(2, user_id);
-            pstmt.execute();
-            pstmt.close();
+
         } catch (Exception e) {
             System.out.println(e.getMessage());
             e.printStackTrace();
@@ -63,7 +58,7 @@ public class FollowUser {
         HashMap<String,Integer> possibleUsers = new HashMap<>();
         String query = "SELECT user_id, username " +
                        "FROM Users WHERE user_id NOT IN(" +
-                            "SELECT followed FROM Followeers WHERE follower = ? AND followed <> ?"+
+                            "SELECT followed FROM Followers WHERE follower = ? AND followed <> ?"+
                         ") AND user_id <> ? AND is_profile_public = true";
 
         try{
