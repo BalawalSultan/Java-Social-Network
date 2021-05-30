@@ -7,7 +7,8 @@ To read the architecture open the [report.md](https://github.com/BalawalSultan/P
 
 ## Installation
 
-Use [Maven](https://maven.apache.org/) to prepare the application.
+Before setting up the java application you must create a PostgreSql database called twitaroo using the Twitaroo.sql.
+Finally use [Maven](https://maven.apache.org/) to prepare the application.
 
 ```bash
 mvn clean install compile package
