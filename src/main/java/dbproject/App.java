@@ -13,7 +13,8 @@ public class App {
       menu.openMenu();
 
     } catch (Exception e) { 
-      System.out.println("An error occurred while connection to the database");
+      System.out.println("An error occurred while connecting to the database!");
+      System.out.println("The system generated the following message: " + e.getMessage());
       e.printStackTrace();
     }
 
